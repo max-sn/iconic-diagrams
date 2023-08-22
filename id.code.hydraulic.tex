@@ -1,0 +1,393 @@
+% ==============================================================================
+% 'generic hydraulic pipe' shape
+% ==============================================================================
+
+\pgfkeys{
+  /pgf/generic hydraulic pipe/before background scaled/.initial=,%
+  /pgf/generic hydraulic pipe/before background equal scale/.initial=%
+}
+
+\makeatletter
+\pgfdeclareshape{generic hydraulic pipe}
+{%
+  \inheritsavedanchors[from=rectangle ee]%
+  \inheritanchor[from=rectangle ee]{center}%
+  \inheritanchor[from=rectangle ee]{north}%
+  \inheritanchor[from=rectangle ee]{south}%
+  \inheritanchor[from=rectangle ee]{east}%
+  \inheritanchor[from=rectangle ee]{west}%
+  \inheritanchor[from=rectangle ee]{north east}%
+  \inheritanchor[from=rectangle ee]{north west}%
+  \inheritanchor[from=rectangle ee]{south east}%
+  \inheritanchor[from=rectangle ee]{south west}%
+  \inheritanchor[from=rectangle ee]{input}%
+  \inheritanchor[from=rectangle ee]{output}%
+  \inheritanchorborder[from=rectangle ee]%
+
+  \backgroundpath{
+    \pgf@process{\pgfpointadd{\southwest}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}
+    \pgf@xa=\pgf@x \pgf@ya=\pgf@y
+    \pgf@process{\pgfpointadd{\northeast}{\pgfpointscale{-1}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}}
+    \pgf@xb=\pgf@x \pgf@yb=\pgf@y
+    % % Middle line
+    % \pgf@yc=.5\pgf@ya
+    % \advance\pgf@yc by.5\pgf@yb
+    % Height of step
+    \pgf@yc=-\pgf@xa
+    \advance\pgf@yc by\pgf@xb
+    % Start at top left
+    \pgfpathmoveto{\pgfqpoint{\pgf@xa}{\pgf@yb}}
+    \pgfpathlineto{\pgfqpoint{\pgf@xb}{\pgf@yb}}
+    \pgfpathmoveto{\pgfqpoint{\pgf@xa}{\pgf@ya}}
+    \pgfpathlineto{\pgfqpoint{\pgf@xb}{\pgf@ya}}
+  }%
+
+  \beforebackgroundpath{%
+    {
+      \pgf@process{\pgfpointadd{\northeast}{%
+      \pgfpointscale{-1}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}}
+      \pgf@xa=\pgf@x \pgf@ya=\pgf@y
+      {
+        \pgftransformxscale{\pgf@sys@tonumber{\pgf@ya}}
+        \pgftransformyscale{\pgf@sys@tonumber{\pgf@ya}}
+        \pgfkeysvalueof{/pgf/generic hydraulic pipe/before background equal scale}%
+      }
+      {
+        \pgftransformxscale{\pgf@sys@tonumber{\pgf@xa}}
+        \pgftransformyscale{\pgf@sys@tonumber{\pgf@ya}}
+        \pgfkeysvalueof{/pgf/generic hydraulic pipe/before background scaled}%
+      }
+    }
+  }%
+}%
+\makeatother
+
+% ==============================================================================
+% 'hydraulic reservoir' shape
+% ==============================================================================
+
+\pgfkeys{/pgf/hydraulic reservoir/fill ratio/.initial=0.5}%
+
+\makeatletter
+\pgfdeclareshape{hydraulic reservoir}
+{%
+  \savedanchor\northeast{%
+    \pgfmathsetlength\pgf@xa{\pgfkeysvalueof{/pgf/outer xsep}}%
+    \pgfmathsetlength\pgf@xb{\pgfkeysvalueof{/pgf/minimum width}}%
+    \pgf@x=\pgf@xa%
+    \advance\pgf@x by .5\pgf@xb%
+    \pgfmathsetlength\pgf@ya{\pgfkeysvalueof{/pgf/outer ysep}}%
+    \pgfmathsetlength\pgf@yb{\pgfkeysvalueof{/pgf/minimum height}}%
+    \pgf@y=\pgf@ya%
+    \advance\pgf@y by\pgf@yb%
+  }%
+  \savedanchor\southwest{%
+    \pgfmathsetlength\pgf@xa{\pgfkeysvalueof{/pgf/outer xsep}}%
+    \pgfmathsetlength\pgf@xb{\pgfkeysvalueof{/pgf/minimum width}}%
+    \pgf@x=-\pgf@xa%
+    \advance\pgf@x by -.5\pgf@xb%
+    \pgfmathsetlength\pgf@ya{\pgfkeysvalueof{/pgf/outer ysep}}%
+    \pgf@y=-\pgf@ya%
+  }%
+  \savedanchor\centerpoint{%
+    \pgfmathsetlength\pgf@ya{\pgfkeysvalueof{/pgf/outer ysep}}%
+    \pgfmathsetlength\pgf@yb{\pgfkeysvalueof{/pgf/minimum height}}%
+    \advance\pgf@ya by\pgf@yb% ya = height
+    \pgf@process{\pgfpointorigin}%
+    \advance\pgf@y by.1\pgf@ya% move ya up 1/10th of height
+  }%
+  \anchor{center}{\centerpoint}%
+  \inheritanchor[from=rectangle ee]{north}%
+  \inheritanchor[from=rectangle ee]{south}%
+  \inheritanchor[from=rectangle ee]{east}%
+  \inheritanchor[from=rectangle ee]{west}%
+  \inheritanchor[from=rectangle ee]{north east}%
+  \inheritanchor[from=rectangle ee]{north west}%
+  \inheritanchor[from=rectangle ee]{south east}%
+  \inheritanchor[from=rectangle ee]{south west}%
+  \anchorborder{%
+    \pgf@xb=\pgf@x% xb/yb is target
+    \pgf@yb=\pgf@y%
+    \northeast%
+    \pgf@xa=\pgf@x% (xa) is ne.
+    \ifdim\pgf@yb<0pt%
+      \pgf@ya=0.1\pgf@y% bottom is 10% of height
+    \else
+      \pgf@ya=0.9\pgf@y% top is 90% of height
+    \fi
+    \edef\pgf@marshal{%
+      \noexpand\pgfpointborderrectangle
+      {\noexpand\pgfqpoint{\the\pgf@xb}{\the\pgf@yb}}%
+      {\noexpand\pgfqpoint{\the\pgf@xa}{\the\pgf@ya}}%
+    }%
+    \centerpoint%
+    \pgf@ya=\pgf@y%
+    \pgf@process{\pgf@marshal}%
+    \advance\pgf@y by\pgf@ya%
+  }%
+  \anchor{input}{%
+    \pgf@process{\southwest}%
+    \pgf@xa=\pgf@x%
+    \pgf@process{\centerpoint}%
+    \advance\pgf@x by\pgf@xa%
+  }%
+  % \anchor{output}{%
+  %   \pgf@process{\northeast}%
+  %   \pgf@xa=\pgf@x%
+  %   \pgf@process{\centerpoint}%
+  %   \advance\pgf@x by\pgf@xa%
+  % }%
+  \backgroundpath{%
+    % South west corner
+    \pgf@process{\pgfpointadd{\southwest}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}
+    \pgf@xa=\pgf@x \pgf@ya=\pgf@y%
+    % North east corner
+    \pgf@process{\pgfpointadd{\northeast}{\pgfpointscale{-1}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}}
+    \pgf@xb=\pgf@x \pgf@yb=\pgf@y%
+    % Get pipe height
+    \pgf@process{\pgfpointadd{\centerpoint}{\pgfpointscale{-1}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}}
+    \pgf@yc=\pgf@y%
+    % Draw left side
+    \pgfpathmoveto{\pgfqpoint{\pgf@xa}{2\pgf@yc}}
+    \pgfpathlineto{\pgfqpoint{0.25\pgf@xa}{2\pgf@yc}}
+    \pgfpathlineto{\pgfqpoint{0.25\pgf@xa}{3\pgf@yc}}
+    \pgfpathlineto{\pgfqpoint{\pgf@xa}{3\pgf@yc}}
+    \pgfpathlineto{\pgfqpoint{\pgf@xa}{\pgf@yb}}
+    % Draw right side
+    \pgfpathmoveto{\pgfqpoint{\pgf@xa}{\pgf@ya}}
+    \pgfpathlineto{\pgfqpoint{0.25\pgf@xb}{\pgf@ya}}
+
+    % \pgfpathmoveto{\pgfqpoint{\pgf@xb}{2\pgf@yc}}
+    % \pgfpathlineto{\pgfqpoint{0.2\pgf@xb}{2\pgf@yc}}
+    \pgfpathlineto{\pgfqpoint{0.25\pgf@xb}{3\pgf@yc}}
+    \pgfpathlineto{\pgfqpoint{\pgf@xb}{3\pgf@yc}}
+    \pgfpathlineto{\pgfqpoint{\pgf@xb}{\pgf@yb}}
+    % Draw bottom of pipe
+    % \pgfpathmoveto{\pgfqpoint{\pgf@xa}{\pgf@ya}}
+    % \pgfpathlineto{\pgfqpoint{\pgf@xb}{\pgf@ya}}
+  }%
+
+  \beforebackgroundpath{%
+    {
+      % South west corner
+      \pgf@process{\pgfpointadd{\southwest}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}
+      \pgf@xa=\pgf@x \pgf@ya=\pgf@y%
+      % North east corner
+      \pgf@process{\pgfpointadd{\northeast}{\pgfpointscale{-1}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}}
+      \pgf@xb=\pgf@x \pgf@yb=\pgf@y%
+      % Get pipe height
+      \pgf@process{\pgfpointadd{\centerpoint}{\pgfpointscale{-1}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}}
+      \pgf@yc=\pgf@y%
+      \pgftransformyshift{3\pgf@yc}
+      \pgftransformyshift{\pgfkeysvalueof{/pgf/inner ysep}}
+      \advance \pgf@yc by6\pgf@yc%
+      \advance \pgf@yc by-\pgfkeysvalueof{/pgf/inner ysep}%
+      \pgf@yc=\pgfkeysvalueof{/pgf/hydraulic reservoir/fill ratio}\pgf@yc%
+      \advance\pgf@xa by\pgfkeysvalueof{/pgf/inner xsep}%
+      \advance\pgf@xb by-\pgfkeysvalueof{/pgf/inner xsep}%
+      % \advance\pgf@xc by-2\pgfkeysvalueof{/pgf/inner xsep}%
+      \pgfpathmoveto{\pgfpoint{\pgf@xa}{0pt}}
+      % \pgfpathmoveto{\pgfpointadd{\pgfpoint{\pgf@xa}{0pt}}{\pgfpoint{\pgfkeysvalueof{/pgf/inner xsep}}{0pt}}}
+      \pgfpathlineto{\pgfpoint{\pgf@xa}{\pgf@yc}}
+      \pgfpathlineto{\pgfpoint{\pgf@xb}{\pgf@yc}}
+      \pgfpathlineto{\pgfpoint{\pgf@xb}{0pt}}
+      \pgfsetfillcolor{idfillcolor}
+      \pgfusepathqfill
+    }
+  }%
+}%
+\makeatother
+
+% ==============================================================================
+% 'pressure source' shape
+% ==============================================================================
+\makeatletter
+\pgfdeclareshape{pressure source}
+{%
+  \inheritsavedanchors[from=rectangle ee]%
+  \inheritanchor[from=rectangle ee]{center}%
+  \inheritanchor[from=rectangle ee]{north}%
+  \inheritanchor[from=rectangle ee]{south}%
+  \inheritanchor[from=rectangle ee]{east}%
+  \inheritanchor[from=rectangle ee]{west}%
+  \inheritanchor[from=rectangle ee]{north east}%
+  \inheritanchor[from=rectangle ee]{north west}%
+  \inheritanchor[from=rectangle ee]{south east}%
+  \inheritanchor[from=rectangle ee]{south west}%
+  \inheritanchor[from=rectangle ee]{input}%
+  \inheritanchor[from=rectangle ee]{output}%
+  \inheritanchorborder[from=rectangle ee]%
+
+  \backgroundpath{
+    \pgf@process{\pgfpointadd{\southwest}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}
+    \pgf@xa=\pgf@x \pgf@ya=\pgf@y
+    \pgf@process{\pgfpointadd{\northeast}{\pgfpointscale{-1}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}}
+    \pgf@xb=\pgf@x \pgf@yb=\pgf@y
+    % Need temp macros for distances
+    \pgfmathsetlengthmacro\id@temp@xa{\pgf@xa}
+    \pgfmathsetlengthmacro\id@temp@ya{\pgf@ya}
+    \pgfmathsetlengthmacro\id@temp@xb{\pgf@xb}
+    \pgfmathsetlengthmacro\id@temp@yb{\pgf@yb}
+    % Big semi-circle
+    \pgfpathmoveto{\pgfpointpolar{160.5}{\id@temp@yb}}
+    \pgfpatharc{160.5}{-160.5}{\id@temp@yb}
+    % Top line of right pipe
+    \pgfpathmoveto{\pgfqpoint{0pt}{\id@temp@yb}}/
+    \pgfpathcurveto%
+      {\pgfpoint{2/3*\id@temp@xb}{\id@temp@yb}}%
+      {\pgfpoint{2/3*\id@temp@xb}{\id@temp@yb/3}}%
+      {\pgfpoint{\id@temp@xb}{\id@temp@yb/3}}
+    % Bottom line of right pipe
+    \pgfpathmoveto{\pgfpoint{0pt}{\id@temp@yb/3}}
+    \pgfpathcurvebetweentime{0.67}{1}%
+      {\pgfpoint{0pt}{\id@temp@yb/3}}%
+      {\pgfpoint{2/3*\id@temp@xb}{\id@temp@yb/3}}%
+      {\pgfpoint{1/3*\id@temp@xb}{\id@temp@ya/3}}%
+      {\pgfpoint{\id@temp@xb}{\id@temp@ya/3}}
+    % Left pipe and small semi-circle
+    \pgfpathmoveto{\pgfpoint{\id@temp@xa}{\id@temp@yb/3}}
+    \pgfpathlineto{\pgfpoint{0pt}{\id@temp@yb/3}}
+    \pgfpatharc{90}{-90}{\id@temp@yb/3}
+    \pgfpathlineto{\pgfpoint{\id@temp@xa}{\id@temp@ya/3}}
+  }%
+}%
+\makeatother
+
+% ==============================================================================
+% 'hydraulic flow source' shape
+% ==============================================================================
+\makeatletter
+\pgfdeclareshape{hydraulic flow source}
+{%
+  \inheritsavedanchors[from=rectangle ee]%
+  \inheritanchor[from=rectangle ee]{center}%
+  \inheritanchor[from=rectangle ee]{north}%
+  \inheritanchor[from=rectangle ee]{south}%
+  \inheritanchor[from=rectangle ee]{east}%
+  \inheritanchor[from=rectangle ee]{west}%
+  \inheritanchor[from=rectangle ee]{north east}%
+  \inheritanchor[from=rectangle ee]{north west}%
+  \inheritanchor[from=rectangle ee]{south east}%
+  \inheritanchor[from=rectangle ee]{south west}%
+  \inheritanchor[from=rectangle ee]{input}%
+  \inheritanchor[from=rectangle ee]{output}%
+  \inheritanchorborder[from=rectangle ee]%
+
+  \backgroundpath{
+    \pgf@process{\pgfpointadd{\southwest}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}
+    \pgf@xa=\pgf@x%
+    \pgf@process{\pgfpointadd{\northeast}{\pgfpointscale{-1}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}}
+    \pgf@xb=\pgf@x \pgf@yb=\pgf@y%
+    % \pgf@yc=0.5\pgf@yb% radius
+    \pgfmathsetlengthmacro\id@temp@r{0.4\pgf@yb}
+    % Left pipe
+    \pgfpathmoveto{\pgfpoint{-3/2*\id@temp@r}{\id@temp@r}}
+    \pgfpathlineto{\pgfpoint{\pgf@xa}{\id@temp@r}}
+    \pgfpathmoveto{\pgfpoint{-3/2*\id@temp@r}{-\id@temp@r}}
+    \pgfpathlineto{\pgfpoint{\pgf@xa}{-\id@temp@r}}
+    % Right pipe
+    \pgfpathmoveto{\pgfpoint{3/2*\id@temp@r}{\id@temp@r}}
+    \pgfpathlineto{\pgfpoint{\pgf@xb}{\id@temp@r}}
+    \pgfpathmoveto{\pgfpoint{3/2*\id@temp@r}{-\id@temp@r}}
+    \pgfpathlineto{\pgfpoint{\pgf@xb}{-\id@temp@r}}
+    % Two small circles
+    \pgfpathcircle{\pgfpoint{0pt}{\id@temp@r}}{3/2*\id@temp@r}
+    \pgfpathcircle{\pgfpoint{0pt}{-\id@temp@r}}{3/2*\id@temp@r}
+  }%
+}%
+\makeatother
+
+
+% Hydraulic symbols
+\tikzset{
+  % hydraulic inertia
+  circuit declare symbol=hydraulic inertia,
+  set hydraulic inertia graphic={
+    circuit symbol lines,
+    circuit symbol size=width 4 height 1,
+    shape=generic hydraulic pipe,
+    /pgf/generic hydraulic pipe/before background scaled={
+      % Fill
+      \pgfpathmoveto{\pgfqpoint{-1pt}{0.75pt}}
+      \pgfpathlineto{\pgfqpoint{1pt}{0.75pt}}
+      \pgfpathlineto{\pgfqpoint{1pt}{-0.75pt}}
+      \pgfpathlineto{\pgfqpoint{-1pt}{-0.75pt}}
+      \pgfpathclose
+      \pgfsetfillcolor{idfillcolor}
+      \pgfusepathqfill
+    }
+    transform shape,
+    outer xsep=0pt,
+    cap=round,
+  },
+  % hydraulic resistance
+  circuit declare symbol=hydraulic resistance,
+  set hydraulic resistance graphic={
+    circuit symbol lines,
+    circuit symbol size=width 4 height 1,
+    shape=generic hydraulic pipe,
+    /pgf/generic hydraulic pipe/before background equal scale={
+      % Fill
+      \pgftransformscale{0.65}
+      \pgftransformxshift{-4.2pt}
+      \pgfpathmoveto{\pgfqpoint{-1pt}{1pt}}
+      \pgfpathlineto{\pgfqpoint{1pt}{-1pt}}
+      \pgfpathmoveto{\pgfqpoint{-1pt}{-1pt}}
+      \pgfpathlineto{\pgfqpoint{1pt}{1pt}}
+      \pgftransformxshift{2.6pt}
+      \pgfpathmoveto{\pgfqpoint{-1pt}{1pt}}
+      \pgfpathlineto{\pgfqpoint{1pt}{-1pt}}
+      \pgfpathmoveto{\pgfqpoint{-1pt}{-1pt}}
+      \pgfpathlineto{\pgfqpoint{1pt}{1pt}}
+      \pgftransformxshift{2.6pt}
+      \pgfpathmoveto{\pgfqpoint{-1pt}{1pt}}
+      \pgfpathlineto{\pgfqpoint{1pt}{-1pt}}
+      \pgfpathmoveto{\pgfqpoint{-1pt}{-1pt}}
+      \pgfpathlineto{\pgfqpoint{1pt}{1pt}}
+      \pgftransformxshift{2.6pt}
+      \pgfpathmoveto{\pgfqpoint{-1pt}{1pt}}
+      \pgfpathlineto{\pgfqpoint{1pt}{-1pt}}
+      \pgfpathmoveto{\pgfqpoint{-1pt}{-1pt}}
+      \pgfpathlineto{\pgfqpoint{1pt}{1pt}}
+      % \pgfpathlineto{\pgfqpoint{1pt}{-0.75pt}}
+      % \pgfpathlineto{\pgfqpoint{-1pt}{-0.75pt}}
+      \pgfusepathqstroke
+    }
+    transform shape,
+    outer xsep=0pt,
+    cap=round,
+  },
+  % hydraulic reservoir
+  circuit declare symbol=hydraulic reservoir,
+  set hydraulic reservoir graphic={
+    circuit symbol lines,
+    circuit symbol size=width 4 height 5,
+    shape=hydraulic reservoir,
+    transform shape,
+    outer sep=0pt,
+    inner sep=2pt,
+    cap=round,
+  },
+  % pressure source
+  circuit declare symbol=pressure source,
+  set pressure source graphic={
+    circuit symbol lines,
+    circuit symbol size=width 5 height 3,
+    shape=pressure source,
+    transform shape,
+    outer sep=0pt,
+    inner sep=2pt,
+    cap=round,
+  },
+  % hydraulic flow source
+  circuit declare symbol=hydraulic flow source,
+  set hydraulic flow source graphic={
+    circuit symbol lines,
+    circuit symbol size=width 2 height 2.5,
+    shape=hydraulic flow source,
+    transform shape,
+    outer sep=0pt,
+    inner sep=2pt,
+    cap=round,
+  },
+}

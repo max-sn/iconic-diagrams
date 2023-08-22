@@ -1,0 +1,5 @@
+# Remnants of the xbondgraphs package
+xbg*
+
+# Visual Studio code settings
+.vscode

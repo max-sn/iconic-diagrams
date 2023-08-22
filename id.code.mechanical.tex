@@ -1,0 +1,576 @@
+% ==============================================================================
+% 'spring' shape
+% ==============================================================================
+\makeatletter
+\pgfdeclareshape{spring}%
+{%
+  \inheritsavedanchors[from=rectangle ee]%
+  \inheritanchor[from=rectangle ee]{center}%
+  \inheritanchor[from=rectangle ee]{north}%
+  \inheritanchor[from=rectangle ee]{south}%
+  \inheritanchor[from=rectangle ee]{east}%
+  \inheritanchor[from=rectangle ee]{west}%
+  \inheritanchor[from=rectangle ee]{north east}%
+  \inheritanchor[from=rectangle ee]{north west}%
+  \inheritanchor[from=rectangle ee]{south east}%
+  \inheritanchor[from=rectangle ee]{south west}%
+  \inheritanchor[from=rectangle ee]{input}%
+  \inheritanchor[from=rectangle ee]{output}%
+  \inheritanchorborder[from=rectangle ee]%
+
+  \backgroundpath{
+    \pgf@process{\pgfpointadd{\southwest}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}
+    \pgf@xa=\pgf@x \pgf@ya=\pgf@y
+    \pgf@process{\pgfpointadd{\northeast}{\pgfpointscale{-1}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}}
+    \pgf@xb=\pgf@x \pgf@yb=\pgf@y
+    % Middle line
+    \pgf@yc=.5\pgf@ya
+    \advance\pgf@yc by.5\pgf@yb
+
+    % Start of loop, domain= -1:1
+    \pgf@xc=-1pt%
+    % \pgfplothandlercurveto
+    % \pgfplotstreamstart
+    % \pgfplotstreampoint{\pgfqpoint{\pgf@xa}{\pgf@yc}}
+    \pgfpathmoveto{\pgfqpoint{\pgf@xa}{\pgf@yc}}
+    % x scale
+    \pgfmathparse{\pgf@xb/(\pgf@xb*cos(-24) - \pgf@yb * sin(810)*sin(-24))}
+    \pgf@ya=\pgfmathresult pt%
+    \pgfutil@loop%
+      \advance\pgf@xc by.01pt%
+    \ifdim\pgf@xc<0.99pt%
+      \pgfpathlineto{%
+        \pgfpoint%
+          {\pgf@ya*(\pgf@xb*\pgf@xc*cos(-24)-\pgf@yb*sin(810*\pgf@xc)*sin(-24))}%
+          {-\pgf@yb*cos(810*\pgf@xc)}}
+    \pgfutil@repeat%
+  }%
+}%
+\makeatother
+
+% ==============================================================================
+% 'rotational spring' shape
+% ==============================================================================
+\makeatletter
+\pgfdeclareshape{rotational spring}
+{%
+  \inheritsavedanchors[from=rectangle ee]%
+  \inheritanchor[from=rectangle ee]{center}%
+  \inheritanchor[from=rectangle ee]{north}%
+  \inheritanchor[from=rectangle ee]{south}%
+  \inheritanchor[from=rectangle ee]{east}%
+  \inheritanchor[from=rectangle ee]{west}%
+  \inheritanchor[from=rectangle ee]{north east}%
+  \inheritanchor[from=rectangle ee]{north west}%
+  \inheritanchor[from=rectangle ee]{south east}%
+  \inheritanchor[from=rectangle ee]{south west}%
+  \inheritanchor[from=rectangle ee]{input}%
+  \inheritanchor[from=rectangle ee]{output}%
+  \inheritanchorborder[from=rectangle ee]%
+
+  \backgroundpath{
+    \pgf@process{\pgfpointadd{\southwest}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}
+    \pgf@xa=\pgf@x \pgf@ya=\pgf@y%
+    \pgf@process{\pgfpointadd{\northeast}{\pgfpointscale{-1}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}}
+    \pgf@xb=\pgf@x \pgf@yb=\pgf@y%
+    \pgfmathsetmacro\id@temp@t{0}
+    % Center
+    \pgf@yc=.5\pgf@ya
+    \advance\pgf@yc by.5\pgf@yb
+    \pgf@xc=.5\pgf@xa
+    \advance\pgf@xc by.5\pgf@xb
+    % Spiral radius
+    \pgf@ya=\pgf@yb%
+    \pgfpathmoveto{\pgfqpoint{\pgf@xb}{\pgf@yc}}
+    \pgfutil@loop
+    \ifdim\pgf@ya>0.2\pgf@yb
+      \pgfpathlineto{\pgfpointpolar{\id@temp@t}{\pgf@ya}}
+      \advance\pgf@ya by-0.01\pgf@yb
+      \pgfmathsetmacro\id@temp@t{\id@temp@t + 9}
+    \pgfutil@repeat
+    \pgflineto{\pgfqpoint{\pgf@xa}{\pgf@yc}}
+  }%
+}%
+\makeatother
+
+% ==============================================================================
+% 'fixed world' shape
+% ==============================================================================
+\makeatletter
+\pgfdeclareshape{fixed world}
+{%
+  \inheritsavedanchors[from=rectangle ee]%
+  \inheritanchor[from=rectangle ee]{center}%
+  \inheritanchor[from=rectangle ee]{north}%
+  \inheritanchor[from=rectangle ee]{south}%
+  \inheritanchor[from=rectangle ee]{east}%
+  \inheritanchor[from=rectangle ee]{west}%
+  \inheritanchor[from=rectangle ee]{north east}%
+  \inheritanchor[from=rectangle ee]{north west}%
+  \inheritanchor[from=rectangle ee]{south east}%
+  \inheritanchor[from=rectangle ee]{south west}%
+  \inheritanchor[from=rectangle ee]{input}%
+  \inheritanchor[from=rectangle ee]{output}%
+  \inheritanchorborder[from=rectangle ee]%
+
+  \backgroundpath{
+    \pgf@process{\pgfpointadd{\southwest}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}
+    \pgf@xa=\pgf@x \pgf@ya=\pgf@y
+    \pgf@process{\pgfpointadd{\northeast}{\pgfpointscale{-1}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}}
+    \pgf@xb=\pgf@x \pgf@yb=\pgf@y
+    % % Middle line
+    % \pgf@yc=.5\pgf@ya
+    % \advance\pgf@yc by.5\pgf@yb
+    % Height of step
+    \pgf@yc=-\pgf@xa
+    \advance\pgf@yc by\pgf@xb
+    % Start at top right
+    \pgfpathmoveto{\pgfqpoint{\pgf@xb}{\pgf@yb}}
+    \pgfpathlineto{\pgfqpoint{\pgf@xb}{\pgf@ya}}
+    % Draw lines
+    \advance\pgf@yb by-.75\pgf@yc
+    \advance\pgf@ya by-.1pt%
+    \pgfutil@loop%
+      \advance\pgf@yb by-.75\pgf@yc
+    \ifdim\pgf@yb>\pgf@ya%
+      \advance\pgf@yb by\pgf@yc%
+      \pgfpathmoveto{\pgfqpoint{\pgf@xb}{\pgf@yb}}%
+      \advance\pgf@yb by -\pgf@yc%
+      \pgfpathlineto{\pgfqpoint{\pgf@xa}{\pgf@yb}}%
+    \pgfutil@repeat%
+    \advance\pgf@ya by.1pt%
+  }%
+}%
+\makeatother
+
+% ==============================================================================
+% 'generic damper' shape
+% ==============================================================================
+
+\pgfkeys{/pgf/generic damper/before background/.initial=}
+
+\makeatletter
+\pgfdeclareshape{generic damper}
+{%
+  % This shape is a generic rectangle, to which you can add something to
+  % the before background path using the key
+  % /pgf/generic rectangle IEC/before background
+  % When this key is invoked, the transformation matrix will have been
+  % setup such that the rectangle's center is at the origin and that the
+  % position \pgfpoint{1pt}{1pt} lies exactly on the top right of the rectangle
+  % (and, there, on the middle of the line).
+  \inheritsavedanchors[from=rectangle ee]%
+  \inheritanchor[from=rectangle ee]{center}%
+  \inheritanchor[from=rectangle ee]{north}%
+  \inheritanchor[from=rectangle ee]{south}%
+  \inheritanchor[from=rectangle ee]{east}%
+  \inheritanchor[from=rectangle ee]{west}%
+  \inheritanchor[from=rectangle ee]{north east}%
+  \inheritanchor[from=rectangle ee]{north west}%
+  \inheritanchor[from=rectangle ee]{south east}%
+  \inheritanchor[from=rectangle ee]{south west}%
+  \inheritanchor[from=rectangle ee]{input}%
+  \inheritanchor[from=rectangle ee]{output}%
+  \inheritanchorborder[from=rectangle ee]%
+
+  \backgroundpath{
+    \pgf@process{\pgfpointadd{\southwest}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}
+    \pgf@xa=\pgf@x \pgf@ya=\pgf@y
+    \pgf@process{\pgfpointadd{\northeast}{\pgfpointscale{-1}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}}
+    \pgf@xb=\pgf@x \pgf@yb=\pgf@y
+    % Center
+    \pgf@yc=.5\pgf@ya
+    \advance\pgf@yc by.5\pgf@yb
+    \pgf@xc=.5\pgf@xa
+    \advance\pgf@xc by.5\pgf@xb
+    % Start at top left
+    \pgfpathmoveto{\pgfqpoint{\pgf@xa}{\pgf@yb}}
+    \pgfpathlineto{\pgfqpoint{\pgf@xb}{\pgf@yb}}
+    \pgfpathlineto{\pgfqpoint{\pgf@xb}{\pgf@ya}}
+    \pgfpathlineto{\pgfqpoint{\pgf@xa}{\pgf@ya}}
+
+    \pgfpathmoveto{\pgfqpoint{\pgf@xa}{\pgf@yc}}
+    \pgfpathlineto{\pgfqpoint{\pgf@xc}{\pgf@yc}}
+    \pgfpathmoveto{\pgfqpoint{\pgf@xc}{.75\pgf@yb}}
+    \pgfpathlineto{\pgfqpoint{\pgf@xc}{.75\pgf@ya}}
+  }%
+
+  \beforebackgroundpath{%
+    {%
+      \pgf@process{\pgfpointadd{\northeast}{%
+        \pgfpointscale{-1}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}}
+      \pgf@xa=\pgf@x \pgf@ya=\pgf@y
+      \pgftransformxscale{\pgf@sys@tonumber{\pgf@xa}}
+      \pgftransformyscale{\pgf@sys@tonumber{\pgf@ya}}
+      \pgfkeysvalueof{/pgf/generic damper/before background}%
+    }
+  }%
+}%
+\makeatother
+
+% ==============================================================================
+% 'translational source' shape
+% ==============================================================================
+\makeatletter
+\pgfdeclareshape{translational source}
+{%
+  \inheritsavedanchors[from=rectangle ee]%
+  \inheritanchor[from=rectangle ee]{center}%
+  \inheritanchor[from=rectangle ee]{north}%
+  \inheritanchor[from=rectangle ee]{south}%
+  \inheritanchor[from=rectangle ee]{east}%
+  \inheritanchor[from=rectangle ee]{west}%
+  \inheritanchor[from=rectangle ee]{north east}%
+  \inheritanchor[from=rectangle ee]{north west}%
+  \inheritanchor[from=rectangle ee]{south east}%
+  \inheritanchor[from=rectangle ee]{south west}%
+  \inheritanchor[from=rectangle ee]{input}%
+  \inheritanchor[from=rectangle ee]{output}%
+  \inheritanchorborder[from=rectangle ee]%
+
+  \backgroundpath{
+    \pgf@process{\pgfpointadd{\southwest}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}
+    \pgf@xa=\pgf@x \pgf@ya=\pgf@y
+    \pgf@process{\pgfpointadd{\northeast}{\pgfpointscale{-1}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}}
+    \pgf@xb=\pgf@x \pgf@yb=\pgf@y
+    % Center
+    \pgf@yc=.5\pgf@ya
+    \advance\pgf@yc by.5\pgf@yb
+
+    % Center path
+    \pgfpathmoveto{\pgfqpoint{\pgf@xa}{\pgf@yc}}
+    \pgfpathlineto{\pgfqpoint{.4\pgf@xa}{\pgf@yc}}
+    \pgfpathmoveto{\pgfqpoint{.4\pgf@xb}{\pgf@yc}}
+    \pgfpathlineto{\pgfqpoint{\pgf@xb}{\pgf@yc}}
+
+    % Left arrow
+    \pgf@xc=\pgf@xa
+    \advance\pgf@xc by\pgf@yb
+    \pgfpathmoveto{\pgfqpoint{\pgf@xa}{\pgf@yb}}
+    \pgfpathlineto{\pgfqpoint{\pgf@xc}{\pgf@yc}}
+    \pgfpathlineto{\pgfqpoint{\pgf@xa}{\pgf@ya}}
+
+    % Right arrow
+    \pgf@xc=\pgf@xb
+    \advance\pgf@xc by\pgf@ya
+    \pgfpathmoveto{\pgfqpoint{\pgf@xc}{\pgf@yb}}
+    \pgfpathlineto{\pgfqpoint{\pgf@xb}{\pgf@yc}}
+    \pgfpathlineto{\pgfqpoint{\pgf@xc}{\pgf@ya}}
+  }%
+}%
+\makeatother
+
+
+% ==============================================================================
+% 'rotational source' shape
+% ==============================================================================
+\makeatletter
+\pgfdeclareshape{rotational source}
+{%
+  \inheritsavedanchors[from=rectangle ee]%
+  \inheritanchor[from=rectangle ee]{center}%
+  \inheritanchor[from=rectangle ee]{north}%
+  \inheritanchor[from=rectangle ee]{south}%
+  \inheritanchor[from=rectangle ee]{east}%
+  \inheritanchor[from=rectangle ee]{west}%
+  \inheritanchor[from=rectangle ee]{north east}%
+  \inheritanchor[from=rectangle ee]{north west}%
+  \inheritanchor[from=rectangle ee]{south east}%
+  \inheritanchor[from=rectangle ee]{south west}%
+  \inheritanchor[from=rectangle ee]{input}%
+  \inheritanchor[from=rectangle ee]{output}%
+  \inheritanchorborder[from=rectangle ee]%
+  \inheritbackgroundpath[from=translational source]
+
+  \beforebackgroundpath{
+    \pgf@process{\pgfpointadd{\southwest}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}
+    \pgf@xa=\pgf@x \pgf@ya=\pgf@y
+    \pgf@process{\pgfpointadd{\northeast}{\pgfpointscale{-1}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}}
+    \pgf@xb=\pgf@x \pgf@yb=\pgf@y
+    % Center
+    \pgf@yc=.5\pgf@ya
+    \advance\pgf@yc by.5\pgf@yb
+
+    % Left additional arrow
+    \advance\pgf@xa by\pgf@yb
+    \pgf@xc=\pgf@xa
+    \advance\pgf@xc by\pgf@yb
+    \pgfpathmoveto{\pgfqpoint{\pgf@xa}{\pgf@yb}}
+    \pgfpathlineto{\pgfqpoint{\pgf@xc}{\pgf@yc}}
+    \pgfpathlineto{\pgfqpoint{\pgf@xa}{\pgf@ya}}
+    \pgfusepathqstroke
+
+    % Right additional arrow
+    \advance\pgf@xb by\pgf@ya
+    \pgf@xc=\pgf@xb
+    \advance\pgf@xc by\pgf@ya
+    \pgfpathmoveto{\pgfqpoint{\pgf@xc}{\pgf@yb}}
+    \pgfpathlineto{\pgfqpoint{\pgf@xb}{\pgf@yc}}
+    \pgfpathlineto{\pgfqpoint{\pgf@xc}{\pgf@ya}}
+    \pgfusepathqstroke
+  }%
+}%
+\makeatother
+
+% ==============================================================================
+% 'friction' shape
+% ==============================================================================
+\makeatletter
+\pgfdeclareshape{friction}
+{%
+  \inheritsavedanchors[from=rectangle ee]%
+  \inheritanchor[from=rectangle ee]{center}%
+  \inheritanchor[from=rectangle ee]{north}%
+  \inheritanchor[from=rectangle ee]{south}%
+  \inheritanchor[from=rectangle ee]{east}%
+  \inheritanchor[from=rectangle ee]{west}%
+  \inheritanchor[from=rectangle ee]{north east}%
+  \inheritanchor[from=rectangle ee]{north west}%
+  \inheritanchor[from=rectangle ee]{south east}%
+  \inheritanchor[from=rectangle ee]{south west}%
+  \inheritanchor[from=rectangle ee]{input}%
+  \inheritanchor[from=rectangle ee]{output}%
+  \inheritanchorborder[from=rectangle ee]%
+
+  % TODO
+  \backgroundpath{
+    \pgf@process{\pgfpointadd{\southwest}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}
+    \pgf@xa=\pgf@x \pgf@ya=\pgf@y
+    \pgf@process{\pgfpointadd{\northeast}{\pgfpointscale{-1}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}}
+    \pgf@xb=\pgf@x \pgf@yb=\pgf@y
+    % Middle height
+    \pgf@yc=.5\pgf@ya
+    \advance\pgf@yc by.5\pgf@yb
+    % % Middle width
+    % \pgf@xc=-.5\pgf@xa
+    % \advance\pgf@xc by.5\pgf@xb
+
+    \pgfpathmoveto{\pgfqpoint{\pgf@xa}{\pgf@yc}}
+    \pgfpathlineto{\pgfqpoint{\pgf@xb}{\pgf@yc}}
+    \pgfpathmoveto{\pgfqpoint{\pgf@xa}{0.666667\pgf@ya}}
+    \pgfpathlineto{\pgfqpoint{\pgf@xb}{0.666667\pgf@ya}}
+    \pgfpathmoveto{\pgfqpoint{\pgf@xa}{0.666667\pgf@yb}}
+    \pgfpathlineto{\pgfqpoint{\pgf@xb}{0.666667\pgf@yb}}
+    % Draw crosses
+    {%
+      \pgftransformxshift{-\tikzcircuitssizeunit}%
+      \pgf@yc=.3\tikzcircuitssizeunit%
+      {%
+        \pgftransformyshift{0.333333*\pgf@yb}%
+        \pgfpathmoveto{\pgfqpoint{-\pgf@yc}{\pgf@yc}}%
+        \pgfpathlineto{\pgfqpoint{\pgf@yc}{-\pgf@yc}}%
+        \pgfpathmoveto{\pgfqpoint{-\pgf@yc}{-\pgf@yc}}%
+        \pgfpathlineto{\pgfqpoint{\pgf@yc}{\pgf@yc}}%
+        \pgftransformxshift{\tikzcircuitssizeunit}%
+        \pgfpathmoveto{\pgfqpoint{-\pgf@yc}{\pgf@yc}}%
+        \pgfpathlineto{\pgfqpoint{\pgf@yc}{-\pgf@yc}}%
+        \pgfpathmoveto{\pgfqpoint{-\pgf@yc}{-\pgf@yc}}%
+        \pgfpathlineto{\pgfqpoint{\pgf@yc}{\pgf@yc}}%
+        \pgftransformxshift{\tikzcircuitssizeunit}%
+        \pgfpathmoveto{\pgfqpoint{-\pgf@yc}{\pgf@yc}}%
+        \pgfpathlineto{\pgfqpoint{\pgf@yc}{-\pgf@yc}}%
+        \pgfpathmoveto{\pgfqpoint{-\pgf@yc}{-\pgf@yc}}%
+        \pgfpathlineto{\pgfqpoint{\pgf@yc}{\pgf@yc}}%
+      }%
+      {%
+        \pgftransformyshift{-0.333333*\pgf@yb}%
+        \pgfpathmoveto{\pgfqpoint{-\pgf@yc}{\pgf@yc}}%
+        \pgfpathlineto{\pgfqpoint{\pgf@yc}{-\pgf@yc}}%
+        \pgfpathmoveto{\pgfqpoint{-\pgf@yc}{-\pgf@yc}}%
+        \pgfpathlineto{\pgfqpoint{\pgf@yc}{\pgf@yc}}%
+        \pgftransformxshift{\tikzcircuitssizeunit}%
+        \pgfpathmoveto{\pgfqpoint{-\pgf@yc}{\pgf@yc}}%
+        \pgfpathlineto{\pgfqpoint{\pgf@yc}{-\pgf@yc}}%
+        \pgfpathmoveto{\pgfqpoint{-\pgf@yc}{-\pgf@yc}}%
+        \pgfpathlineto{\pgfqpoint{\pgf@yc}{\pgf@yc}}%
+        \pgftransformxshift{\tikzcircuitssizeunit}%
+        \pgfpathmoveto{\pgfqpoint{-\pgf@yc}{\pgf@yc}}%
+        \pgfpathlineto{\pgfqpoint{\pgf@yc}{-\pgf@yc}}%
+        \pgfpathmoveto{\pgfqpoint{-\pgf@yc}{-\pgf@yc}}%
+        \pgfpathlineto{\pgfqpoint{\pgf@yc}{\pgf@yc}}%
+      }%
+    }%
+    % Width of step
+    \pgf@xc=0.75\tikzcircuitssizeunit%
+    {%
+      % Draw lines for fixed world top
+      \advance\pgf@xb by-.75\pgf@xc%
+      \advance\pgf@xa by-.1pt%
+      \pgfutil@loop%
+        \advance\pgf@xb by-.75\pgf@xc
+      \ifdim\pgf@xb>\pgf@xa%
+        \advance\pgf@xb by\pgf@xc%
+        \pgfpathmoveto{\pgfqpoint{\pgf@xb}{0.666667\pgf@yb}}%
+        \advance\pgf@xb by-0.666667\pgf@xc%
+        \pgfpathlineto{\pgfqpoint{\pgf@xb}{\pgf@yb}}%
+        \advance\pgf@xb by-0.333333\pgf@xc%
+      \pgfutil@repeat%
+      \advance\pgf@xa by.1pt%
+    }
+    {%
+      % Draw lines for fixed world bottom
+      \advance\pgf@xa by.75\pgf@xc%
+      \advance\pgf@xb by.1pt%
+      \pgfutil@loop%
+        \advance\pgf@xa by.75\pgf@xc
+      \ifdim\pgf@xa<\pgf@xb%
+        \advance\pgf@xa by-\pgf@xc%
+        \pgfpathmoveto{\pgfqpoint{\pgf@xa}{0.666667\pgf@ya}}%
+        \advance\pgf@xa by0.666667\pgf@xc%
+        \pgfpathlineto{\pgfqpoint{\pgf@xa}{\pgf@ya}}%
+        \advance\pgf@xa by0.333333\pgf@xc%
+      \pgfutil@repeat%
+      \advance\pgf@xb by.1pt%
+    }
+  }%
+}%
+\makeatother
+
+
+% ==============================================================================
+% Mechanical icons
+% ==============================================================================
+\tikzset{
+  % spring icon
+  circuit declare symbol=spring,
+  set spring graphic={
+    circuit symbol lines,
+    circuit symbol size=width 4 height 2,
+    shape=spring,
+    transform shape,
+    outer xsep=0pt,
+    cap=round,
+  },
+  % rotational spring icon
+  circuit declare symbol=rotational spring,
+  set rotational spring graphic={
+    circuit symbol lines,
+    circuit symbol size=width 2 height 2,
+    shape=rotational spring,
+    transform shape,
+    outer xsep=0pt,
+    cap=round,
+  },
+  % mass icon
+  circuit declare symbol=mass,
+  set mass graphic={
+    draw,
+    shape=rectangle ee,
+    circuit symbol size=width 4 height 4,
+    text=idlabelcolor,
+    info={[black]center:\(m\)},
+  },
+  % inertia icon
+  circuit declare symbol=inertia,
+  set inertia graphic={
+    draw,
+    shape=rectangle ee,
+    circuit symbol size=width 2 height 5,
+    text=idlabelcolor,
+    info={[black]center:\(I\)},
+  },
+  % fixed world icon
+  circuit declare symbol=fixed world,
+  set fixed world graphic={
+    circuit symbol lines,
+    circuit symbol size=width 0.75 height 4,
+    shape=fixed world,
+    transform shape,
+    outer xsep=0pt,
+    cap=round,
+    anchor=east,
+  },
+  % damper icon
+  circuit declare symbol=damper,
+  set damper graphic={
+    circuit symbol lines,
+    circuit symbol size=width 2 height 3,
+    shape=generic damper,
+    transform shape,
+    outer xsep=0pt,
+    cap=round,
+  },
+  % rotational damper icon
+  circuit declare symbol=rotational damper,
+  set rotational damper graphic={
+    circuit symbol lines,
+    circuit symbol size=width 2 height 3,
+    shape=generic damper,
+    /pgf/generic damper/before background={
+      % \pgfpathcircle{\pgfqpoint{0pt}{0pt}}{3\tikzcircuitssizeunit}
+      \pgfpathmoveto{\pgfpoint{-0.75pt}{0.75pt}}
+      \pgfpathlineto{\pgfpoint{0.75pt}{0.75pt}}
+      \pgfusepathqstroke
+      \pgfpathmoveto{\pgfpoint{-0.75pt}{-0.75pt}}
+      \pgfpathlineto{\pgfpoint{0.75pt}{-0.75pt}}
+      \pgfusepathqstroke
+    },
+    transform shape,
+    outer xsep=0pt,
+    cap=round,
+  },
+  % force source
+  circuit declare symbol=force source,
+  set force source graphic={
+    circuit symbol lines,
+    circuit symbol size=width 4 height 1,
+    shape=translational source,
+    transform shape,
+    outer xsep=0pt,
+    cap=round,
+    info={[black]center:\(\mathrm{F}\)},
+  },
+  % torque source
+  circuit declare symbol=torque source,
+  set torque source graphic={
+    circuit symbol lines,
+    circuit symbol size=width 4 height 1,
+    shape=rotational source,
+    transform shape,
+    outer xsep=0pt,
+    cap=round,
+    info={[black]center:\(\mathrm{T}\)},
+  },
+  % velocity source
+  circuit declare symbol=velocity source,
+  set velocity source graphic={
+    circuit symbol lines,
+    circuit symbol size=width 4 height 1,
+    shape=translational source,
+    transform shape,
+    outer xsep=0pt,
+    cap=round,
+    info={[black]center:\(\mathrm{V}\)},
+  },
+  % angular velocity source
+  circuit declare symbol=angular velocity source,
+  set angular velocity source graphic={
+    circuit symbol lines,
+    circuit symbol size=width 4 height 1,
+    shape=rotational source,
+    transform shape,
+    outer xsep=0pt,
+    cap=round,
+    info={[black]center:\(\mathrm{W}\)},
+  },
+  % friction
+  circuit declare symbol=friction,
+  set friction graphic={
+    circuit symbol lines,
+    circuit symbol size=width 3 height 3,
+    shape=friction,
+    transform shape,
+    outer xsep=0pt,
+    cap=round,
+  },
+}
+
+% ==============================================================================
+% Mechanical annotations
+% ==============================================================================
+\tikzset{
+  flip/.style={xscale=-1},
+  circuit declare annotation={velocity direction}{10pt}{
+    (0,0) edge[to path={-- ++(0,10pt) --++(0:12pt)}] ()
+  }
+}

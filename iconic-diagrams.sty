@@ -1,0 +1,105 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{iconic-diagrams}
+  [2021/10/22 v0.0.1 Iconic diagram drawing using Tikz]
+\RequirePackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, circuits.ee.IEC, chains}
+
+\def\id@error#1#2{\PackageError{iconic-diagrams}{#1}{#2}}
+\def\id@warning#1{\PackageWarning{iconic-diagrams}{#1}}
+\pgfkeys{/id/.is family}
+\def\idset{\pgfqkeys{/id}}
+\long\def\idset@late@options#1{\appto%
+    \id@lateoptions@hook{\idset{#1}}}
+\def\useidlibrary#1{\idset{load libraries/.list={#1}}}
+
+\colorlet{idlabelcolor}{blue}
+\colorlet{idfillcolor}{lightgray}
+
+\idset{
+  load libraries/.code={
+    \idset{library/#1}
+  },
+  library/blockdiagram/.code={\input{id.code.blockdiagram.tex}},
+  library/hydraulic/.code={\input{id.code.hydraulic.tex}},
+  library/mechanical/.code={\input{id.code.mechanical.tex}},
+  library/all/.code=\idset{load libraries/.list={blockdiagram,hydraulic,mechanical}},
+  library/.unknown/.code={\id@error{No library named "\pgfkeyscurrentname" exists}{}},
+  label color/.code={\colorlet{idlabelcolor}{#1}},
+  fill color/.code={\colorlet{idfillcolor}{#1}},
+}
+
+\tikzset{
+  circuit ee IEC,
+  every info/.style={
+    text=idlabelcolor,
+  },
+  sum sign/.style={
+    at={([turn]-2\tikzcircuitssizeunit,0.8\tikzcircuitssizeunit)},
+    inner sep=0pt,
+    minimum size=0.8\tikzcircuitssizeunit
+  },
+  + sign/.style={
+    sum sign, 
+    path picture={\draw[-, shorten >=0pt, shorten <=0pt]
+      (path picture bounding box.west) -- (path picture bounding box.east)
+      (path picture bounding box.north) -- (path picture bounding box.south);},
+  },
+  - sign/.style={
+    sum sign,
+    path picture={\draw[-, shorten >=0pt, shorten <=0pt]
+      (path picture bounding box.west) -- (path picture bounding box.east);},
+  },
+  block diagram picture/.style={
+    y={(0,-1)},
+  },
+  potential difference/.style={
+    <->, >=Latex, shorten <=1mm, shorten >=1mm, line width=1.2pt, every node/.append style={text=idlabelcolor},
+  },
+  every +- annotation/.style={
+    /tikz/annotation arrow/.style={>={}},
+  },
+  -+ annotation/.style={
+    info={[black,inner sep=0pt,minimum size=0.8\tikzcircuitssizeunit,
+           path picture={\draw[-, shorten >=0pt, shorten <=0pt]
+                         (path picture bounding box.west) -- (path picture bounding box.east)
+                         (path picture bounding box.north) -- (path picture bounding box.south);}]
+          north east:{}},
+    info={[black,inner sep=0pt,minimum size=0.8\tikzcircuitssizeunit,
+           path picture={\draw[-, shorten >=0pt, shorten <=0pt]
+                         (path picture bounding box.west) -- (path picture bounding box.east);}]
+          north west:{}}
+  },
+  +- annotation/.style={
+    info={[black,inner sep=0pt,minimum size=0.8\tikzcircuitssizeunit,
+           path picture={\draw[-, shorten >=0pt, shorten <=0pt]
+                         (path picture bounding box.west) -- (path picture bounding box.east);}]
+          north east:{}},
+    info={[black,inner sep=0pt,minimum size=0.8\tikzcircuitssizeunit,
+           path picture={\draw[-, shorten >=0pt, shorten <=0pt]
+                         (path picture bounding box.west) -- (path picture bounding box.east)
+                         (path picture bounding box.north) -- (path picture bounding box.south);}]
+          north west:{}}
+  },
+  -+ annotation'/.style={
+    info={[black,inner sep=0pt,minimum size=0.8\tikzcircuitssizeunit,
+           path picture={\draw[-, shorten >=0pt, shorten <=0pt]
+                         (path picture bounding box.west) -- (path picture bounding box.east)
+                         (path picture bounding box.north) -- (path picture bounding box.south);}]
+          south east:{}},
+    info={[black,inner sep=0pt,minimum size=0.8\tikzcircuitssizeunit,
+           path picture={\draw[-, shorten >=0pt, shorten <=0pt]
+                         (path picture bounding box.west) -- (path picture bounding box.east);}]
+          south west:{}}
+  },
+  +- annotation'/.style={
+    info={[black,inner sep=0pt,minimum size=0.8\tikzcircuitssizeunit,
+           path picture={\draw[-, shorten >=0pt, shorten <=0pt]
+                         (path picture bounding box.west) -- (path picture bounding box.east);}]
+          south east:{}},
+    info={[black,inner sep=0pt,minimum size=0.8\tikzcircuitssizeunit,
+           path picture={\draw[-, shorten >=0pt, shorten <=0pt]
+                         (path picture bounding box.west) -- (path picture bounding box.east)
+                         (path picture bounding box.north) -- (path picture bounding box.south);}]
+          south west:{}}
+  },
+}

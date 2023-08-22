@@ -1,0 +1,201 @@
+% ==============================================================================
+% 'generic rectangle IEC' shape
+% ==============================================================================
+
+\pgfkeys{/pgf/generic rectangle IEC/before background/.initial=}
+
+\makeatletter
+\pgfdeclareshape{generic rectangle IEC}
+{%
+  % This shape is a generic rectangle, to which you can add something to
+  % the before background path using the key
+  % /pgf/generic rectangle IEC/before background
+  % When this key is invoked, the transformation matrix will have been
+  % setup such that the rectangle's center is at the origin and that the
+  % position \pgfpoint{1pt}{1pt} lies exactly on the top right of the rectangle
+  % (and, there, on the middle of the line).
+
+  \inheritsavedanchors[from=rectangle ee]%
+  \inheritanchorborder[from=rectangle ee]%
+  \inheritanchor[from=rectangle ee]{north}%
+  \inheritanchor[from=rectangle ee]{north west}%
+  \inheritanchor[from=rectangle ee]{north east}%
+  \inheritanchor[from=rectangle ee]{center}%
+  \inheritanchor[from=rectangle ee]{west}%
+  \inheritanchor[from=rectangle ee]{east}%
+  \inheritanchor[from=rectangle ee]{south}%
+  \inheritanchor[from=rectangle ee]{south west}%
+  \inheritanchor[from=rectangle ee]{south east}%
+  \inheritanchor[from=rectangle ee]{input}%
+  \inheritanchor[from=rectangle ee]{output}%
+  \inheritbackgroundpath[from=rectangle ee]%
+
+  \beforebackgroundpath{%
+    {%
+      \pgf@process{\pgfpointadd{\northeast}{%
+        \pgfpointscale{-1}{\pgfpoint{\pgfkeysvalueof{/pgf/outer xsep}}{\pgfkeysvalueof{/pgf/outer ysep}}}}}
+      \pgf@xa=\pgf@x \pgf@ya=\pgf@y
+      \pgftransformxscale{\pgf@sys@tonumber{\pgf@xa}}
+      \pgftransformyscale{\pgf@sys@tonumber{\pgf@ya}}
+      \pgfkeysvalueof{/pgf/generic rectangle IEC/before background}%
+    }
+  }%
+}
+\makeatother
+
+% My symbols
+\tikzset{
+  % block symbol
+  circuit declare symbol=block,
+  set block graphic={
+    draw,
+    shape=rectangle ee,
+    minimum size=4\tikzcircuitssizeunit,
+    text=idlabelcolor
+  },
+  % sum symbol
+  circuit declare symbol=sum,
+  set sum graphic={
+    draw,
+    shape=circle ee,
+    minimum size=3\tikzcircuitssizeunit,
+    text=idlabelcolor,
+    info={center:\(\displaystyle\Sigma\)}
+  },
+  % integrator symbol
+  circuit declare symbol=integrator,
+  set integrator graphic={
+    draw,
+    shape=rectangle ee,
+    minimum size=4\tikzcircuitssizeunit,
+    text=idlabelcolor,
+    info={center:\(\displaystyle\int\)},
+  },
+  % differentiator symbol
+  circuit declare symbol=differentiator,
+  set differentiator graphic={
+    draw,
+    shape=rectangle ee,
+    circuit symbol size=width 4 height 4,
+    text=idlabelcolor,
+    info={center:\(\frac{\mathrm{d}}{\mathrm{d}t}\)},
+  },
+  % terminator symbol
+  circuit declare symbol=terminator,
+  set terminator graphic={
+    circuit symbol open,
+    circuit symbol size=width 3 height 3,
+    shape=generic rectangle IEC,
+    text=idlabelcolor,
+    /pgf/generic rectangle IEC/before background={
+      \pgfpathmoveto{\pgfpoint{-1pt}{0pt}}
+      \pgfpathlineto{\pgfpoint{0.667pt}{0pt}}
+      \pgfpathmoveto{\pgfpoint{-0.667pt}{0.667pt}}
+      \pgfpathlineto{\pgfpoint{0.667pt}{0.667pt}}
+      \pgfpathlineto{\pgfpoint{0.667pt}{-0.667pt}}
+      \pgfpathlineto{\pgfpoint{-0.667pt}{-0.667pt}}
+      \pgfusepathqstroke
+    },
+  },
+  % gyrator symbol
+  circuit declare symbol=gyrator,
+  set gyrator graphic={
+    circuit symbol open,
+    circuit symbol size=width 3 height 2,
+    shape=generic circle IEC,
+    /pgf/generic circle IEC/before background={
+      % \pgfpathcircle{\pgfqpoint{0pt}{0pt}}{3\tikzcircuitssizeunit}
+      \pgfpathmoveto{\pgfpointpolar{135}{1pt}}
+      \pgfpathlineto{\pgfpoint{-1pt}{sin(135)*1pt}}
+      \pgfpathlineto{\pgfpoint{-1pt}{sin(-135)*1pt}}
+      \pgfpathlineto{\pgfpointpolar{-135}{1pt}}
+      \pgfpatharc{-135}{-225}{1pt}
+      \pgfusepathqfillstroke
+      \pgfpathmoveto{\pgfpointpolar{-45}{1pt}}
+      \pgfpathlineto{\pgfpoint{1pt}{sin(-45)*1pt}}
+      \pgfpathlineto{\pgfpoint{1pt}{sin(45)*1pt}}
+      \pgfpathlineto{\pgfpointpolar{45}{1pt}}
+      \pgfpatharc{45}{-45}{1pt}
+      \pgfusepathqfillstroke
+    },
+    transform shape,
+  },
+  % signal symbol
+  circuit declare symbol=signal,
+  set signal graphic={
+    circuit symbol filled,
+    circuit symbol size=width 0.7 height 0.5,
+    shape=generic diode IEC,
+    sloped,
+    transform shape,
+    outer sep=0pt
+  },
+  % crossing symbol
+  circuit declare symbol=crossing,
+  set crossing graphic={
+    circuit symbol wires,
+    circuit symbol size=width 1 height 0.5,
+    transform shape,
+    shape=inductor IEC,
+    outer xsep=0pt,
+    inner sep=0pt,
+    cap=round,
+  },
+}
+
+\tikzset{
+  % C block symbol
+  circuit declare symbol=C block,
+  set C block graphic={
+    draw,
+    shape=rectangle ee,
+    minimum size=4\tikzcircuitssizeunit,
+    text=idlabelcolor,
+    info={center:\(\frac{1}{C}\)},
+  },
+  % C block' symbol
+  circuit declare symbol=C block',
+  set C block' graphic={
+    draw,
+    shape=rectangle ee,
+    minimum size=4\tikzcircuitssizeunit,
+    text=idlabelcolor,
+    info={center:\(C\)},
+  },
+  % I block symbol
+  circuit declare symbol=I block,
+  set I block graphic={
+    draw,
+    shape=rectangle ee,
+    minimum size=4\tikzcircuitssizeunit,
+    text=idlabelcolor,
+    info={center:\(\frac{1}{I}\)},
+  },
+  % I block' symbol
+  circuit declare symbol=I block',
+  set I block' graphic={
+    draw,
+    shape=rectangle ee,
+    minimum size=4\tikzcircuitssizeunit,
+    text=idlabelcolor,
+    info={center:\(I\)},
+  },
+  % R block symbol
+  circuit declare symbol=R block,
+  set R block graphic={
+    draw,
+    shape=rectangle ee,
+    minimum size=4\tikzcircuitssizeunit,
+    text=idlabelcolor,
+    info={center:\(\frac{1}{R}\)},
+  },
+  % R block' symbol
+  circuit declare symbol=R block',
+  set R block' graphic={
+    draw,
+    shape=rectangle ee,
+    minimum size=4\tikzcircuitssizeunit,
+    text=idlabelcolor,
+    info={center:\(R\)},
+  },
+}
